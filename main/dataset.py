@@ -15,7 +15,8 @@ def system(t, x, phi0, phif, t0):
     # LPV parameter
     phi = phi0 if t <= t0 else phif
 
-    # TODO: Input signal
+    # Input signal
+    u = 1
 
     # System definition in state-space
     A = np.array([[0, phi], [-phi, 0]])
