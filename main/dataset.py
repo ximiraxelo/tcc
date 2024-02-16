@@ -41,9 +41,9 @@ def make_dataset(system, fs=10_000, window_size=10_000, tf=20, y0=[0, 0]):
     u = np.ones(fs * tf, dtype=int)
 
     parameters = parameters_generator(
-        phi0_range=np.linspace(0, 10, 150),
-        phif_range=np.linspace(0, 10, 150),
-        t0_range=np.linspace(0, 20, 50),
+        phi0_range=np.linspace(0, 10, 150).tolist(),
+        phif_range=np.linspace(0, 10, 150).tolist(),
+        t0_range=np.linspace(0, 20, 50).tolist(),
     )
 
     for index, parameter in enumerate(parameters):
