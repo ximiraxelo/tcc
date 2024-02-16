@@ -1,4 +1,6 @@
 import numpy as np
+from numpy.lib.stride_tricks import sliding_window_view
+from scipy.integrate import solve_ivp
 
 
 def system(t, x, phi0, phif, t0):
@@ -25,3 +27,27 @@ def system(t, x, phi0, phif, t0):
     dx = np.dot(A, x) + np.dot(B, u)
 
     return dx
+
+
+def make_dataset(
+    parameters, system, fs=10_000, window_size=10_000, tf=20, y0=[0, 0]
+):
+    t = np.linspace(0, tf, fs * tf)
+    u = np.ones(fs * tf, dtype=int)
+
+    for index, parameter in enumerate(parameters):
+
+        # First state-space variable
+        x1 = solve_ivp(
+            system,
+            t_span=[0, tf],
+            y0=y0,
+            dense_output=True,
+            vectorized=True,
+            args=parameter,
+        ).sol(t)[0]
+
+        # Sliding window
+        signals = np.vstack((x1, u))
+        windowed = sliding_window_view(signals, window_shape=(2, window_size))
+        windowed = np.squeeze(windowed)
