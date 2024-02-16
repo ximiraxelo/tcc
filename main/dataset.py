@@ -29,11 +29,22 @@ def system(t, x, phi0, phif, t0):
     return dx
 
 
-def make_dataset(
-    parameters, system, fs=10_000, window_size=10_000, tf=20, y0=[0, 0]
-):
+def parameters_generator(phi0_range, phif_range, t0_range):
+    for phi0 in phi0_range:
+        for phif in phif_range:
+            for t0 in t0_range:
+                yield (phi0, phif, t0)
+
+
+def make_dataset(system, fs=10_000, window_size=10_000, tf=20, y0=[0, 0]):
     t = np.linspace(0, tf, fs * tf)
     u = np.ones(fs * tf, dtype=int)
+
+    parameters = parameters_generator(
+        phi0_range=np.linspace(0, 10, 150),
+        phif_range=np.linspace(0, 10, 150),
+        t0_range=np.linspace(0, 20, 50),
+    )
 
     for index, parameter in enumerate(parameters):
 
@@ -46,6 +57,8 @@ def make_dataset(
             vectorized=True,
             args=parameter,
         ).sol(t)[0]
+
+        # TODO: parameter
 
         # Sliding window
         signals = np.vstack((x1, u))
