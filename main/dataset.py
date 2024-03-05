@@ -1,5 +1,6 @@
 import numpy as np
-from numpy.lib.stride_tricks import sliding_window_view
+import pandas as pd
+import tsfel
 from scipy.integrate import solve_ivp
 
 
@@ -36,7 +37,9 @@ def parameters_generator(phi0_range, phif_range, t0_range):
                 yield (phi0, phif, t0)
 
 
-def make_dataset(system, fs=10_000, window_size=10_000, tf=20, y0=[0, 0]):
+def make_dataset(
+    system, fs=10_000, window_size=10_000, overlap=0.75, tf=20, y0=[0, 0]
+):
     t = np.linspace(0, tf, fs * tf)
     u = np.ones(fs * tf, dtype=int)
 
@@ -45,6 +48,9 @@ def make_dataset(system, fs=10_000, window_size=10_000, tf=20, y0=[0, 0]):
         phif_range=np.linspace(0, 10, 150).tolist(),
         t0_range=np.linspace(0, 20, 50).tolist(),
     )
+
+    cfg = tsfel.get_features_by_domain()
+    X = pd.DataFrame()
 
     for index, parameter in enumerate(parameters):
 
@@ -58,9 +64,24 @@ def make_dataset(system, fs=10_000, window_size=10_000, tf=20, y0=[0, 0]):
             args=parameter,
         ).sol(t)[0]
 
-        # TODO: parameter
+        # LPV parameter
+        phi0, phif, t0 = parameter
+        slices = slice(
+            window_size - 1, fs * tf, int(round(window_size * (1 - overlap)))
+        )
+        phi = np.where(t <= t0, phi0, phif)[slices]
 
-        # Sliding window
-        signals = np.vstack((x1, u))
-        windowed = sliding_window_view(signals, window_shape=(2, window_size))
-        windowed = np.squeeze(windowed)
+        # Feature extraction
+        X_dataframe = pd.DataFrame({'x1': x1, 'u': u})
+        features = tsfel.time_series_features_extractor(
+            cfg,
+            X_dataframe,
+            fs=10_000,
+            window_size=window_size,
+            overlap=overlap,
+            verbose=0,
+        )
+        X = pd.concat([X, features], ignore_index=True)
+
+    return X, phi
+
