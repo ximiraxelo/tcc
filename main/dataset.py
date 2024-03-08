@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import tsfel
@@ -85,3 +87,14 @@ def make_dataset(
 
     return X, phi
 
+
+if __name__ == '__main__':
+    X, y = make_dataset(system, overlap=0.6, tf=10)
+
+    SAVE_PATH = Path('D:') / 'dados_tcc' / 'step'
+
+    if not SAVE_PATH.exists():
+        SAVE_PATH.mkdir()
+
+    X.to_feather(SAVE_PATH / 'X.feather')
+    np.save(SAVE_PATH / 'y.npy', y)
