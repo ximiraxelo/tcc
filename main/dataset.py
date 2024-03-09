@@ -1,3 +1,4 @@
+import time
 import warnings
 from pathlib import Path
 
@@ -61,10 +62,13 @@ def make_dataset(
     )
 
     cfg = tsfel.get_features_by_domain()
+    total_time = 0
+
     X = pd.DataFrame()
 
     for index, parameter in enumerate(parameters):
 
+        initial_time = time.time()
         print(f'System {index+1:6_} of {N_SYSTEMS:_}', end=' ')
 
         # First state-space variable
@@ -96,6 +100,11 @@ def make_dataset(
                 verbose=0,
             )
         X = pd.concat([X, features], ignore_index=True)
+
+        final_time = time.time()
+        loop_time = final_time - initial_time
+        total_time += loop_time / 60
+        print(f'| {loop_time:4.2} s | {total_time:6.2} m')
 
     return X, phi
 
