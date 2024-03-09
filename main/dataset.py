@@ -41,21 +41,31 @@ def parameters_generator(phi0_range, phif_range, t0_range):
 
 
 def make_dataset(
-    system, fs=10_000, window_size=10_000, overlap=0.75, tf=20, y0=[0, 0]
+    system,
+    fs=10_000,
+    window_size=10_000,
+    overlap=0.75,
+    tf=20,
+    y0=[0, 0],
+    params_range=(20, 20, 50),
 ):
+
+    N_SYSTEMS = np.prod(params_range)
     t = np.linspace(0, tf, fs * tf)
     u = np.ones(fs * tf, dtype=int)
 
     parameters = parameters_generator(
-        phi0_range=np.linspace(0, 10, 150).tolist(),
-        phif_range=np.linspace(0, 10, 150).tolist(),
-        t0_range=np.linspace(0, 20, 50).tolist(),
+        phi0_range=np.linspace(0.01, 10, params_range[0]).tolist(),
+        phif_range=np.linspace(0.01, 10, params_range[1]).tolist(),
+        t0_range=np.linspace(1, 19, params_range[2]).tolist(),
     )
 
     cfg = tsfel.get_features_by_domain()
     X = pd.DataFrame()
 
     for index, parameter in enumerate(parameters):
+
+        print(f'System {index+1:6_} of {N_SYSTEMS:_}', end=' ')
 
         # First state-space variable
         x1 = solve_ivp(
