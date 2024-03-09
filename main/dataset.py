@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -75,14 +76,15 @@ def make_dataset(
 
         # Feature extraction
         X_dataframe = pd.DataFrame({'x1': x1, 'u': u})
-        features = tsfel.time_series_features_extractor(
-            cfg,
-            X_dataframe,
-            fs=10_000,
-            window_size=window_size,
-            overlap=overlap,
-            verbose=0,
-        )
+        with warnings.catch_warnings(action='ignore'):
+            features = tsfel.time_series_features_extractor(
+                cfg,
+                X_dataframe,
+                fs=10_000,
+                window_size=window_size,
+                overlap=overlap,
+                verbose=0,
+            )
         X = pd.concat([X, features], ignore_index=True)
 
     return X, phi
