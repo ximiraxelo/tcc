@@ -1,5 +1,6 @@
 import time
 import warnings
+from math import ceil
 from pathlib import Path
 
 import numpy as np
@@ -52,6 +53,9 @@ def make_dataset(
 ):
 
     N_SYSTEMS = np.prod(params_range)
+    WINDOW_STEP = int(round(window_size * (1 - overlap)))
+    N_WINDOWS = ceil((fs * tf - (window_size - 1)) / WINDOW_STEP)
+
     t = np.linspace(0, tf, fs * tf)
     u = np.ones(fs * tf, dtype=int)
 
