@@ -55,6 +55,7 @@ def make_dataset(
     N_SYSTEMS = np.prod(params_range)
     WINDOW_STEP = int(round(window_size * (1 - overlap)))
     N_WINDOWS = ceil((fs * tf - (window_size - 1)) / WINDOW_STEP)
+    SLICES = slice(window_size - 1, fs * tf, WINDOW_STEP)
 
     t = np.linspace(0, tf, fs * tf)
     u = np.ones(fs * tf, dtype=int)
@@ -88,10 +89,8 @@ def make_dataset(
 
         # LPV parameter
         phi0, phif, t0 = parameter
-        slices = slice(
-            window_size - 1, fs * tf, int(round(window_size * (1 - overlap)))
-        )
-        phi = np.where(t <= t0, phi0, phif)[slices]
+        phi_slices = slice(index * N_WINDOWS, (index + 1) * N_WINDOWS)
+        phi[phi_slices] = np.where(t <= t0, phi0, phif)[SLICES]
 
         # Feature extraction
         X_dataframe = pd.DataFrame({'x1': x1, 'u': u})
