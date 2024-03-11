@@ -69,6 +69,7 @@ def make_dataset(
     total_time = 0
 
     X = pd.DataFrame()
+    phi = np.empty(N_SYSTEMS * N_WINDOWS)
 
     for index, parameter in enumerate(parameters):
 
