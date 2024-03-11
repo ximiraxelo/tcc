@@ -108,7 +108,7 @@ def make_dataset(
         final_time = time.time()
         loop_time = final_time - initial_time
         total_time += loop_time / 60
-        print(f'| {loop_time:4.2} s | {total_time:6.2} m')
+        print(f'| {loop_time:4.2f} s | {total_time:6.2f} m')
 
     return X, phi
 
