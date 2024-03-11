@@ -61,7 +61,7 @@ def make_dataset(
         t0_range=np.linspace(1, 19, params_range[2]).tolist(),
     )
 
-    cfg = tsfel.get_features_by_domain()
+    cfg = tsfel.get_features_by_domain(json_path='features.json')
     total_time = 0
 
     X = pd.DataFrame()
