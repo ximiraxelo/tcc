@@ -55,6 +55,7 @@ def backup(X, y, backup_path):
 
 def make_dataset(
     system,
+    backup_path,
     fs=10_000,
     window_size=10_000,
     overlap=0.75,
@@ -121,16 +122,26 @@ def make_dataset(
         total_time += loop_time / 60
         print(f'| {loop_time:4.2f} s | {total_time:6.2f} m')
 
+        # Backup
+        if (index + 1) % 1000 == 0:
+            backup(X, phi, backup_path)
+
     return X, phi
 
 
 if __name__ == '__main__':
-    X, y = make_dataset(system, overlap=0.6, tf=10)
-
     SAVE_PATH = Path('D:') / 'dados_tcc' / 'step'
 
     if not SAVE_PATH.exists():
         SAVE_PATH.mkdir()
+
+    X, y = make_dataset(
+        system,
+        backup_path=SAVE_PATH,
+        overlap=0.7,
+        tf=15,
+        params_range=(20, 20, 40),
+    )
 
     X.to_feather(SAVE_PATH / 'X.feather')
     np.save(SAVE_PATH / 'y.npy', y)
