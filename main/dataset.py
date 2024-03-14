@@ -42,6 +42,17 @@ def parameters_generator(phi0_range, phif_range, t0_range):
                 yield (phi0, phif, t0)
 
 
+def backup(X, y, backup_path):
+    try:
+        X.to_feather(backup_path / f'X_backup.feather')
+        np.save(backup_path / f'y_backup.npy', y)
+    except Exception as err:
+        print('\nxxxx Backup error xxxx\n')
+        print(err)
+    else:
+        print('\n---- Backup performed successfully ----\n')
+
+
 def make_dataset(
     system,
     fs=10_000,
