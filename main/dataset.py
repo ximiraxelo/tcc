@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import tsfel
+from rich import print
 from scipy.integrate import solve_ivp
 
 
@@ -47,10 +48,10 @@ def backup(X, y, backup_path):
         X.to_feather(backup_path / f'X_backup.feather')
         np.save(backup_path / f'y_backup.npy', y)
     except Exception as err:
-        print('\nxxxx Backup error xxxx\n')
+        print('\n[red]xxxx Backup error xxxx\n')
         print(err)
     else:
-        print('\n---- Backup performed successfully ----\n')
+        print('\n[green]---- Backup performed successfully ----\n')
 
 
 def make_dataset(
