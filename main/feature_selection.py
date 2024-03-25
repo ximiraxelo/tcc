@@ -12,6 +12,8 @@ def non_zero_variance_selector(
     data_path, save_path=None, save=False, threshold=0
 ):
 
+    print('[purple]Non Zero Variance Selector\n')
+
     selected_features = []
 
     for column in range(730):
@@ -34,6 +36,8 @@ def non_zero_variance_selector(
             print('[green]OK')
         else:
             print('[red]REMOVED')
+
+    print(f'\nRemaining features: {len(selected_features)}')
 
     if save:
         with open(
