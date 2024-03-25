@@ -9,7 +9,7 @@ from scipy.stats import pearsonr
 
 
 def non_zero_variance_selector(
-    data_path, save_path=None, save=False, threshold=1e-6
+    data_path, save_path=None, save=False, threshold=0
 ):
 
     selected_features = []
