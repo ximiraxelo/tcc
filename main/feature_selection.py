@@ -99,6 +99,42 @@ def correlation_selector(
     return selected_features
 
 
+def dataset_preparation(selected_features, data_path):
+
+    print('[purple]Saving the dataset...\n')
+
+    DATASET_PATH = data_path / 'dataset'
+
+    if not DATASET_PATH.exists():
+        DATASET_PATH.mkdir()
+
+    target_chunk_list = []
+    dataset_chunk_list = []
+
+    for target_chunk_path in data_path.glob('**/y.npy'):
+        target_chunk = np.load(target_chunk_path)
+        target_chunk_list.append(target_chunk)
+
+    target = np.concatenate(target_chunk_list)
+
+    for dataset_chunk_path in data_path.glob('**/X.feather'):
+        chunk = pd.read_feather(dataset_chunk_path, columns=selected_features)
+
+        dataset_chunk_list.append(chunk)
+
+    dataset = pd.concat(dataset_chunk_list, ignore_index=True)
+
+    # Saving dataset with selected features
+    try:
+        dataset.to_feather(DATASET_PATH / 'X.feather')
+        np.save(DATASET_PATH / 'y.npy', target)
+    except Exception as err:
+        print('\n[red]xxxx Saving Error xxxx\n')
+        print(err)
+    else:
+        print('\n[green]---- Saved Successfully ----\n')
+
+
 if __name__ == '__main__':
 
     DATA_PATH = Path('D:/dados_tcc/dados_tcc_esdras')
@@ -118,3 +154,5 @@ if __name__ == '__main__':
         save=True,
         threshold=0.2,
     )
+
+    dataset_preparation(correlation_features, DATA_PATH)
