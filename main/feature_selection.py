@@ -139,6 +139,7 @@ if __name__ == '__main__':
 
     DATA_PATH = Path('D:/dados_tcc/dados_tcc_esdras')
     SAVE_PATH = Path('D:/dados_tcc/files')
+    BASE_PATH = Path('D:/dados_tcc')
 
     if not SAVE_PATH.exists():
         SAVE_PATH.mkdir()
@@ -155,4 +156,4 @@ if __name__ == '__main__':
         threshold=0.2,
     )
 
-    dataset_preparation(correlation_features, DATA_PATH)
+    dataset_preparation(correlation_features, BASE_PATH)
