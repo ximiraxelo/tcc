@@ -153,7 +153,7 @@ if __name__ == '__main__':
         DATA_PATH,
         SAVE_PATH,
         save=True,
-        threshold=0.2,
+        threshold=0.07,
     )
 
     dataset_preparation(correlation_features, BASE_PATH)
