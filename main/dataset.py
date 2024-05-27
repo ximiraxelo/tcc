@@ -11,7 +11,7 @@ from scipy.integrate import solve_ivp
 
 
 def system(t, x, phi0, phif, t0):
-    """_summary_
+    """Representation of the LPV System
 
     Args:
         t (float):  simulation time in seconds
